@@ -7,13 +7,33 @@ interface AppProps {
   color?: string;
 }
 
+// Describes the state of our properties we expect to have
+// interface AppState {
+//   counter: number;
+// }
+
 // Define App component.
 // Reference AppProps interface as React.Component generic type
 // This way Typescript knows the props that are going to be passed
 // to component
+// Component<P, S> takes optionally two types
+// First type is props, second type is state we expect to have
+// Default types are empty objects P = {} and S = {}
+// If use constructor to set this.state then it does not overwrite default
+// And we need to give state interface as second type
+// React.Component<AppProps, AppState>
 class App extends React.Component<AppProps> {
   // Define state property as object
+  // Overwrites default state property of empty object S = {}
+  // If use this then do not need to pass in second type of AppState into
+  // React.Component
   state = { counter: 0 };
+
+  //   constructor(props: AppProps) {
+  //     super(props);
+
+  //     this.state = { counter: 0 };
+  //   }
 
   // Define methods as arrow functions to bind 'this' to
   // this instance of App class
