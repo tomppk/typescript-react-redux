@@ -7,10 +7,17 @@ interface AppProps {
   color?: string;
 }
 
-// Describes the state of our properties we expect to have
-// interface AppState {
-//   counter: number;
-// }
+// // Describes the state of our properties we expect to have
+// // interface AppState {
+// //   counter: number;
+// // }
+
+// Functional component
+// Takes in props of the type defined in AppProps interface
+// Returns JSX.Element
+// const App = (props: AppProps): JSX.Element => {
+//   return <div>{props.color}</div>;
+// };
 
 // Define App component.
 // Reference AppProps interface as React.Component generic type
@@ -56,4 +63,4 @@ class App extends React.Component<AppProps> {
   }
 }
 
-ReactDOM.render(<App />, document.querySelector('#root'));
+ReactDOM.render(<App color="red" />, document.querySelector('#root'));
