@@ -1,10 +1,41 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Todo, fetchTodos } from '../actions';
+import { StoreState } from '../reducers';
 
-export class App extends React.Component {
+// Define the props that App component is going to receive
+// Add this type to React.Component<> so Typescript can check
+// that received props are of correct type
+interface AppProps {
+  todos: Todo[];
+  fetchTodos(): any;
+}
+
+// underscore _App used only to separate the name from the connected App
+// we want to export
+class _App extends React.Component<AppProps> {
   render() {
     return <div>Hi there</div>;
   }
 }
+
+// Map redux store state to props so our component has access to
+// state stored inside redux store. Enter keys and values we want
+// our component to access from store
+// The type of state is our StoreState interface that describes the
+// structure and data inside our store
+// Return an object with key of todos with value of array of Todos
+// Destructured {todos: state.todos}
+const mapStateToProps = (state: StoreState): { todos: Todo[] } => {
+  return { todos };
+};
+
+// We do not want to export _App but the connected version of App
+// First set of parentheses for configuration
+// Second set the component we want to connect redux store state to
+// First argument is mapStateToProps function
+// Second argument and object containing fetchTodos action creator
+export const App = connect(mapStateToProps, { fetchTodos })(_App);
 
 // Describes all the props and their structure that you expect
 // to pass as into your component
