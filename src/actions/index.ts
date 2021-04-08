@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 import { ActionTypes } from './types';
 
 // Define interface that type Todo must satisfy
-interface Todo {
+export interface Todo {
   id: number;
   title: string;
   completed: boolean;
@@ -13,7 +13,7 @@ interface Todo {
 // dispatched.
 // This will be used as type for dispatch to make sure
 // we will always pass in the correct type for dispatch
-interface FetchTodosAction {
+export interface FetchTodosAction {
   type: ActionTypes.fetchTodos;
   payload: Todo[];
 }
