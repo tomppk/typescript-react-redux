@@ -1,44 +1,86 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Todo, fetchTodos } from '../actions';
+import { Todo, fetchTodos, deleteTodo } from '../actions';
 import { StoreState } from '../reducers';
 
 // Define the props that App component is going to receive
 // Add this type to React.Component<> so Typescript can check
 // that received props are of correct type
+// fetchTodos is type Function because of async redux-thunk
+// fetchTodos returns a function that will await the response promise
+// to resolve which then calls the dispatch function
 interface AppProps {
   todos: Todo[];
-  fetchTodos(): any;
+  fetchTodos: Function;
+  deleteTodo: typeof deleteTodo;
+}
+
+// Checks whether fetching data and displays LOADING...
+// We want to initialize our state object inside our constructor
+interface AppState {
+  fetching: boolean;
 }
 
 // underscore _App used only to separate the name from the connected App
 // we want to export
-class _App extends React.Component<AppProps> {
+class _App extends React.Component<AppProps, AppState> {
+  // Initialize fetching state inside constructor
+  constructor(props: AppProps) {
+    super(props);
+
+    this.state = { fetching: false };
+  }
+
+  // This function is called whenever the component is updated
+  // Called with previous state of props
+  // If previous state of had no props in todos array and this current
+  // state has some props then we have successfully fetched a list of todos
+  // Update state to fetching false
+  componentDidUpdate(prevProps: AppProps): void {
+    if (!prevProps.todos.length && this.props.todos.length) {
+      this.setState({ fetching: false });
+    }
+  }
+
   // Use arrow function to bind 'this' to this instance of App component
   // Access this.props and call fetchTodos() to make axios request to fetch
   // and array of Todo[]
   // fetchTodos() received from redux state store through mapStateToProps and
   // connect()
+  // While fetching set state to true
   onButtonClick = (): void => {
     this.props.fetchTodos();
+    this.setState({ fetching: true });
+  };
+
+  // Method to delete todo
+  onTodoClick = (id: number): void => {
+    this.props.deleteTodo(id);
   };
 
   // Return an array of JSX elements
   // Map over the todos array and for each todo return a div with
   // the key of todo.id and text of todo.title
+  // Add onClick property for each div with todo.id
   renderList(): JSX.Element[] {
     return this.props.todos.map((todo: Todo) => {
-      return <div key={todo.id}>{todo.title}</div>;
+      return (
+        <div onClick={() => this.onTodoClick(todo.id)} key={todo.id}>
+          {todo.id} {todo.title}
+        </div>
+      );
     });
   }
 
   // Reference this.renderList() function under button element
   // Before fetching a list of Todos this.props.todos is empty array
   // So nothing is rendered until button is clicked
+  // Display text LOADING if App component state fetching is true
   render() {
     return (
       <div>
         <button onClick={this.onButtonClick}>Fetch</button>
+        {this.state.fetching ? 'LOADING' : null}
         {this.renderList()}
       </div>
     );
@@ -60,7 +102,7 @@ const mapStateToProps = (state: StoreState): { todos: Todo[] } => {
 // Second set the component we want to connect redux store state to
 // First argument is mapStateToProps function
 // Second argument and object containing fetchTodos action creator
-export const App = connect(mapStateToProps, { fetchTodos })(_App);
+export const App = connect(mapStateToProps, { fetchTodos, deleteTodo })(_App);
 
 // Describes all the props and their structure that you expect
 // to pass as into your component
