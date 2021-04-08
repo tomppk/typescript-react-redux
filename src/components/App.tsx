@@ -14,8 +14,34 @@ interface AppProps {
 // underscore _App used only to separate the name from the connected App
 // we want to export
 class _App extends React.Component<AppProps> {
+  // Use arrow function to bind 'this' to this instance of App component
+  // Access this.props and call fetchTodos() to make axios request to fetch
+  // and array of Todo[]
+  // fetchTodos() received from redux state store through mapStateToProps and
+  // connect()
+  onButtonClick = (): void => {
+    this.props.fetchTodos();
+  };
+
+  // Return an array of JSX elements
+  // Map over the todos array and for each todo return a div with
+  // the key of todo.id and text of todo.title
+  renderList(): JSX.Element[] {
+    return this.props.todos.map((todo: Todo) => {
+      return <div key={todo.id}>{todo.title}</div>;
+    });
+  }
+
+  // Reference this.renderList() function under button element
+  // Before fetching a list of Todos this.props.todos is empty array
+  // So nothing is rendered until button is clicked
   render() {
-    return <div>Hi there</div>;
+    return (
+      <div>
+        <button onClick={this.onButtonClick}>Fetch</button>
+        {this.renderList()}
+      </div>
+    );
   }
 }
 
@@ -25,9 +51,8 @@ class _App extends React.Component<AppProps> {
 // The type of state is our StoreState interface that describes the
 // structure and data inside our store
 // Return an object with key of todos with value of array of Todos
-// Destructured {todos: state.todos}
 const mapStateToProps = (state: StoreState): { todos: Todo[] } => {
-  return { todos };
+  return { todos: state.todos };
 };
 
 // We do not want to export _App but the connected version of App
