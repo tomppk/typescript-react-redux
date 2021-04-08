@@ -1,5 +1,4 @@
-import { Todo, FetchTodosAction } from '../actions';
-import { ActionTypes } from '../actions/types';
+import { Todo, FetchTodosAction, ActionTypes } from '../actions';
 
 // First argument the type of state with default value of empty array
 // Second argument the dispatched action from action creator
